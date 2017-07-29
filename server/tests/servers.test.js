@@ -275,7 +275,7 @@ describe('POST /users/login', () => {
     });
     
     
-    it('should rereject invalid login', (done) => {
+    it('should reject invalid login', (done) => {
         request(app)
             .post('/users/login')
             .send({

@@ -7,7 +7,7 @@ const {ObjectID} = require('mongodb');
 var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
-var {autenticate} = require('./middleware/authenticate');
+var {authenticate} = require('./middleware/authenticate');
 
 
 var app = express();
@@ -103,7 +103,7 @@ app.post('/users', (req,res) => {
 });
 
 
-app.get('/users/me', autenticate, (req, res) => {
+app.get('/users/me', authenticate, (req, res) => {
     var token = req.header('x-auth');
 
     User.findByToken(token).then((user) => {
@@ -128,6 +128,14 @@ app.post('/users/login', (req, res) => {
         res.status(400).send();
     });
 });
+
+app.delete('/users/me/token', authenticate, (req, res) => {
+    req.user.removeToken(req.token).then(() => {
+        res.status(200).send();
+    }, () => {
+        res.status(400).send();
+    });
+})
 
 app.listen(port,() => {
     console.log(`Server is running on port ${port} ...`);
